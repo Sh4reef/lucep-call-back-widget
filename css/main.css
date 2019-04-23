@@ -20,8 +20,6 @@ main {
 
 .widget {
   position: fixed;
-  bottom: 10px;
-  right: 40px;
   height: 480px;
   width: 350px;
   background-color: rgb(14, 14, 60);
@@ -32,8 +30,6 @@ main {
 .widget-btn {
   cursor: pointer;
   position: fixed;
-  bottom: 10px;
-  right: 40px;
   background-color: rgb(14, 14, 60);
   width: 350px;
   height: 70px;
