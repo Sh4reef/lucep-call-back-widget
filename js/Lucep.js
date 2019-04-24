@@ -2,6 +2,8 @@
 const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: true }) => {
   return new class {
     constructor(options = defaultOptions) {
+      this.valid = false;
+      this.fields = { name: false, phone: false, email: false };
       this.position = options.position ? options.position : {};
       this.widget = document.createElement('div');
       this.widget.className = 'widget';
@@ -18,26 +20,29 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
         <form>
           ${!options.name && options.name !== undefined ? `` : `
             <div class="form_field">
-              <input type="text" name="name" placeholder="Your Name">  
+              <p id="nemsg" class="emsg">Required!</p>
+              <input type="text" id="name" name="name" placeholder="Your Name">  
             </div>
           `}
           ${!options.phone && options.phone !== undefined ? `` : `
             <div class="form_field">
-              <input type="text" name="phone" placeholder="Phone Number">  
+              <p id="pemsg" class="emsg">Required!</p>
+              <input type="text" id="phone" name="phone" placeholder="Phone Number">  
             </div>
           `}
           <div class="form_field">              
-              <select name="purpose" id="">
+              <select name="purpose" id="purpose">
                 <option value="content">I'm Interested in Content</option>
                 <option value="design">I'm Interested in Design.</option>
               </select>
           </div>
           ${!options.email && options.email !== undefined ? `` : `
             <div class="form_field">
-              <input type="text" name="email" placeholder="Email">
+              <p id="eemsg" class="emsg">Required!</p>
+              <input type="text" id="email" name="email" placeholder="Email">
             </div>  
           `}        
-          <div class="widget_form-btn">
+          <div class="widget_form-btn">              
               <button type="submit" class="form-btn">call now</button>
           </div>
         </form>
@@ -53,6 +58,69 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
           <p>Click here to get a call-back</p>
         </div>      
       `;
+    };
+
+    validate() {
+      const qs = (n) => document.getElementById(n);
+      // https://stackoverflow.com/questions/2386054/javascript-phone-number-validation
+      const validatePhone = (phone) => {
+        const re = /[^0-9]/;
+        return re.test(Number(phone));
+      };
+      // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+      const validateEmail = (email) => {
+        const re = /\S+@\S+\.\S+/;
+        return re.test(String(email).toLowerCase());
+      };
+      if (qs('name').value.trim() === '') {
+        this.fields.name = false;
+        qs('nemsg').style.display = 'block';
+      } else {
+        this.fields.name = true;
+        qs('nemsg').style.display = 'none';
+      };
+      if (qs('phone').value.trim() === '') {
+        this.fields.phone = false;
+        qs('pemsg').style.display = 'block';
+      } else if (validatePhone(qs('phone').value.trim())) {
+        this.fields.phone = false;
+        qs('pemsg').innerHTML = 'Invalid Phone!';
+        qs('pemsg').style.display = 'block';
+      } else {
+        this.fields.phone = true;
+        qs('pemsg').style.display = 'none';
+      };
+      if (qs('email').value.trim() === '') {
+        this.fields.email = false;
+        qs('eemsg').style.display = 'block';
+      } else if (!validateEmail(qs('email').value.trim())) {
+        this.fields.email = false
+        qs('eemsg').innerHTML = 'Invalid Email!';
+        qs('eemsg').style.display = 'block';
+      } else {
+        this.fields.email = true
+        qs('eemsg').style.display = 'none';
+      };
+
+      if (this.fields.name && this.fields.phone && this.fields.email) {
+        this.valid = true
+      }
+    };
+
+    submit() {
+      document.getElementsByClassName('widget_form-btn')[0].innerHTML = `
+        <div class="loader"></div>
+      `
+      // simulating async request
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve({ success: 'we will call you back soon, thanks!' })
+        }, 1000);
+      }).then((res) => {
+        document.getElementsByClassName('widget_form-btn')[0].innerHTML = `
+          <p class="success">${res.success}</p>
+        `
+      })
     };
 
     render() {
@@ -79,9 +147,12 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
         this.widgetButton.style.opacity = 0;
       };
       const [submitButton] = document.getElementsByClassName('form-btn');
-      submitButton.onclick = function (e) {
+      submitButton.onclick = (e) => {
         e.preventDefault();
-        console.log(e);
+        this.validate();
+        if (this.valid) {
+          this.submit();
+        };
       };
     };
   };
