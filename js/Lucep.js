@@ -58,6 +58,7 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
           <p>Click here to get a call-back</p>
         </div>      
       `;
+      this.render()
     };
 
     validate() {
