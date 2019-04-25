@@ -155,9 +155,10 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
               <button type="submit" class="form-btn">call now</button>              
             `
             qs('pemsg').innerHTML = 'Invalid Phone!';
-            qs('pemsg').style.display = 'block';            
+            qs('pemsg').style.display = 'block';
           }
-          this.render()
+          alert(JSON.stringify(res));
+          this.render();
         })
     };
 
