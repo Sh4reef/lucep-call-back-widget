@@ -4,9 +4,6 @@ function Lucep(options) {
     return document.getElementById(n);
   }
   function init() {
-    // constructor(options = defaultOptions) {
-      
-    // };
     if (typeof options === undefined) {
       this.options = { position: {}, name: true, phone: true, email: true }
     } else {
@@ -77,10 +74,6 @@ function Lucep(options) {
     var makeRequest = function(url, method) {
       // Create the XHR request
       var request = new XMLHttpRequest();
-      // Return it as a Promise
-      // return new Promise(function(resolve, reject) {
-        
-      // });
       // Setup our listener to process compeleted requests
       request.onreadystatechange = function () {
         // Only run if the request is complete
@@ -88,7 +81,6 @@ function Lucep(options) {
         // Process the response
         if (request.status >= 200 && request.status < 300) {
           // If successful
-          // resolve(JSON.parse(request.response));
           var res = JSON.parse(request.response);
           res.valid && (document.getElementsByClassName('widget_form-btn')[0].innerHTML = '<p class="success">we will call you back soon, thanks!</p><button type="submit" class="form-btn">call now</button>');
           if (!res.valid) {
@@ -119,16 +111,6 @@ function Lucep(options) {
     document.getElementsByClassName('widget_form-btn')[0].innerHTML = '<div class="loader"></div>';
 
     makeRequest(ENDPOINT+'&number='+qs('phone').value.trim())
-      // .then(function(res) {
-      //   res.valid && (document.getElementsByClassName('widget_form-btn')[0].innerHTML = '<p class="success">we will call you back soon, thanks!</p><button type="submit" class="form-btn">call now</button>');
-      //   if (!res.valid) {
-      //     document.getElementsByClassName('widget_form-btn')[0].innerHTML = '<p class="danger">Make sure the phone number is valid!</p><button type="submit" class="form-btn">call now</button>';
-      //     qs('pemsg').innerHTML = 'Invalid Phone!';
-      //     qs('pemsg').style.display = 'block';
-      //   }
-      //   alert(JSON.stringify(res));
-      //   this.render();
-      // })
   }
 
   init.prototype.renderForm = function() {
