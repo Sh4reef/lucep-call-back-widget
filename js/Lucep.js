@@ -4,14 +4,15 @@ function Lucep(options) {
     return document.getElementById(n);
   }
   function init() {
-    if (typeof options === undefined) {
+		console.log(options)
+    if (typeof options === 'undefined') {
       this.options = { position: {}, name: true, phone: true, email: true }
     } else {
       this.options = options
     }
     this.valid = false;
     this.fields = { name: false, phone: false, email: false };
-    this.position = options.position ? options.position : {};
+    this.position = options && options.position ? options.position : {};
     this.widget = document.createElement('div');
     this.widget.className = 'widget';
     this.widgetButton = document.createElement('div');
@@ -115,18 +116,18 @@ function Lucep(options) {
 
   init.prototype.renderForm = function() {
     var form = document.getElementsByTagName('form')[0];
-    if (!options.name && options.name !== undefined) {
+    if (!this.options.name && this.options.name !== undefined) {
         form.innerHTML += ''
     } else {
       form .innerHTML += '<div class="form_field"><p id="nemsg" class="emsg">Required!</p><input type="text" id="name" name="name" placeholder="Your Name"></div>'
     }
-    if (!options.phone && options.phone !== undefined) {
+    if (!this.options.phone && this.options.phone !== undefined) {
       form.innerHTML += ''
     } else {
       form.innerHTML += '<div class="form_field"><p id="pemsg" class="emsg">Required!</p><input type="text" id="phone" name="phone" placeholder="Phone Number"></div>'
     }
     form.innerHTML += '<div class="form_field"><select name="purpose" id="purpose"><option value="content">I\'m Interested in Content</option><option value="design">I\'m Interested in Design.</option></select></div>'
-    if (!options.email && options.email !== undefined) {
+    if (!this.options.email && this.options.email !== undefined) {
       form.innerHTML += ''
     } else {
       form.innerHTML += '<div class="form_field"><p id="eemsg" class="emsg">Required!</p><input type="text" id="email" name="email" placeholder="Email"></div>'
