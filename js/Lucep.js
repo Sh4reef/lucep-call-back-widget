@@ -1,5 +1,6 @@
 'use strict';
 const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: true }) => {
+  const qs = (n) => document.getElementById(n);
   return new class {
     constructor(options = defaultOptions) {
       this.valid = false;
@@ -42,8 +43,8 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
               <input type="text" id="email" name="email" placeholder="Email">
             </div>  
           `}        
-          <div class="widget_form-btn">              
-              <button type="submit" class="form-btn">call now</button>
+          <div class="widget_form-btn">
+            <button type="submit" class="form-btn">call now</button>                            
           </div>
         </form>
         <div class="lucep_logo">
@@ -62,7 +63,6 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
     };
 
     validate() {
-      const qs = (n) => document.getElementById(n);
       // https://stackoverflow.com/questions/2386054/javascript-phone-number-validation
       const validatePhone = (phone) => {
         const re = /[^0-9]/;
@@ -109,19 +109,67 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
     };
 
     submit() {
+      const ENDPOINT = 'http://apilayer.net/api/validate?access_key=57cf69b3a87dbeed8d7e3a17261605f1';
+      // https://gomakethings.com/promise-based-xhr/
+      const makeRequest = (url, method) => {
+        // Create the XHR request
+        const request = new XMLHttpRequest();
+        // Return it as a Promise
+        return new Promise((resolve, reject) => {
+          // Setup our listener to process compeleted requests
+          request.onreadystatechange = function () {
+            // Only run if the request is complete
+            if (request.readyState !== 4) return;
+            // Process the response
+            if (request.status >= 200 && request.status < 300) {
+              // If successful
+              resolve(JSON.parse(request.response));
+            } else {
+              // If failed
+              reject({
+                status: request.status,
+                statusText: request.statusText
+              });
+            }
+          };
+          // Setup our HTTP request
+          request.open(method || 'GET', url, true);
+          // Send the request
+          request.send();
+        });
+      };
+
       document.getElementsByClassName('widget_form-btn')[0].innerHTML = `
         <div class="loader"></div>
       `
+
+      makeRequest(`${ENDPOINT}&number=${qs('phone').value.trim()}`)
+        .then((res) => {
+          res.valid && (document.getElementsByClassName('widget_form-btn')[0].innerHTML = `
+            <p class="success">we will call you back soon, thanks!</p>
+            <button type="submit" class="form-btn">call now</button>        
+          `)
+          if (!res.valid) {
+            document.getElementsByClassName('widget_form-btn')[0].innerHTML = `
+              <p class="danger">Make sure the phone number is valid!</p>
+              <button type="submit" class="form-btn">call now</button>              
+            `
+            qs('pemsg').innerHTML = 'Invalid Phone!';
+            qs('pemsg').style.display = 'block';            
+          }
+          this.render()
+        })
+
       // simulating async request
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve({ success: 'we will call you back soon, thanks!' })
-        }, 1000);
-      }).then((res) => {
-        document.getElementsByClassName('widget_form-btn')[0].innerHTML = `
-          <p class="success">${res.success}</p>
-        `
-      })
+      // new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve({ success: 'we will call you back soon, thanks!' })
+      //   }, 1000);
+      // }).then((res) => {
+      //   document.getElementsByClassName('widget_form-btn')[0].innerHTML = `
+      //     <p class="success">${res.success}</p>
+      //   `
+      // })
     };
 
     render() {
@@ -139,13 +187,13 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
       const [closeButton] = document.getElementsByClassName('widget_close-btn');
       closeButton.onclick = (e) => {
         e.preventDefault();
-        this.widget.style.opacity = 0;
-        this.widgetButton.style.opacity = 1;
+        this.widget.style.display = 'none';
+        this.widgetButton.style.display = 'block';
       };
       this.widgetButton.onclick = (e) => {
         e.preventDefault();
-        this.widget.style.opacity = 1;
-        this.widgetButton.style.opacity = 0;
+        this.widget.style.display = 'block';
+        this.widgetButton.style.display = 'none';
       };
       const [submitButton] = document.getElementsByClassName('form-btn');
       submitButton.onclick = (e) => {
