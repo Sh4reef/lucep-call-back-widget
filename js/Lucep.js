@@ -109,7 +109,7 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
     };
 
     submit() {
-      const ENDPOINT = 'http://apilayer.net/api/validate?access_key=57cf69b3a87dbeed8d7e3a17261605f1';
+      const ENDPOINT = 'https://apilayer.net/api/validate?access_key=57cf69b3a87dbeed8d7e3a17261605f1';
       // https://gomakethings.com/promise-based-xhr/
       const makeRequest = (url, method) => {
         // Create the XHR request
@@ -159,17 +159,6 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
           }
           this.render()
         })
-
-      // simulating async request
-      // new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     resolve({ success: 'we will call you back soon, thanks!' })
-      //   }, 1000);
-      // }).then((res) => {
-      //   document.getElementsByClassName('widget_form-btn')[0].innerHTML = `
-      //     <p class="success">${res.success}</p>
-      //   `
-      // })
     };
 
     render() {
