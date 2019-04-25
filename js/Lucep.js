@@ -4,7 +4,6 @@ function Lucep(options) {
     return document.getElementById(n);
   }
   function init() {
-		console.log(options)
     if (typeof options === 'undefined') {
       this.options = { position: {}, name: true, phone: true, email: true }
     } else {
@@ -12,7 +11,7 @@ function Lucep(options) {
     }
     this.valid = false;
     this.fields = { name: false, phone: false, email: false };
-    this.position = options && options.position ? options.position : {};
+    this.position = options ? options.position : {};
     this.widget = document.createElement('div');
     this.widget.className = 'widget';
     this.widgetButton = document.createElement('div');
