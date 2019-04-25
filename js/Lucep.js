@@ -109,7 +109,7 @@ const Lucep = (defaultOptions = { position: {}, name: true, phone: true, email: 
     };
 
     submit() {
-      const ENDPOINT = 'https://apilayer.net/api/validate?access_key=57cf69b3a87dbeed8d7e3a17261605f1';
+      const ENDPOINT = 'http://apilayer.net/api/validate?access_key=57cf69b3a87dbeed8d7e3a17261605f1';
       // https://gomakethings.com/promise-based-xhr/
       const makeRequest = (url, method) => {
         // Create the XHR request
